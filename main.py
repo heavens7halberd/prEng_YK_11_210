@@ -6,8 +6,8 @@ from fastapi.encoders import jsonable_encoder
 import uvicorn
 from pydantic import BaseModel, Field
 
-from prEnzhYK.tone import tone
-from prEnzhYK.image import image
+from ml_models.tone import tone
+from ml_models.image import image
 
 
 app = FastAPI()
