@@ -1,14 +1,14 @@
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
 import librosa
 import torch
+import io
 
 processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
 
-def transcribe_audio(file_path):
+def transcribe_audio(file):
     try:
-        audio, sample_rate = librosa.load(file_path, sr=16000)
-        print(f"Длина аудиосигнала: {audio.shape[0]}")
+        audio, sample_rate = librosa.load(io.BytesIO(file), sr=16000)
 
         input_values = processor(audio, sampling_rate=sample_rate, return_tensors="pt", padding=True).input_values
 
@@ -20,10 +20,4 @@ def transcribe_audio(file_path):
 
         return decoded_text
     except Exception as e:
-        print(f"Ошибка обработки файла {file_path}: {e}")
-        return None
-
-audio_file_path = "audio.wav"
-predicted_text = transcribe_audio(audio_file_path)
-if predicted_text is not None:
-    print("Распознанный текст:", predicted_text)
+        return {"error": str(e)}
