@@ -11,7 +11,7 @@ from main import app
 
 client = TestClient(app)
 
-# Тестовые данные
+
 TEST_TEXT_POSITIVE = "I love this movie! It's amazing!"
 TEST_TEXT_NEGATIVE = "I hate rainy days, they make me depressed."
 TEST_IMAGE_SIZE = (224, 224)
@@ -19,14 +19,14 @@ TEST_IMAGE_SIZE = (224, 224)
 def generate_test_audio():
     """Генерация тестового WAV аудио в памяти"""
     sample_rate = 44100
-    duration = 1.0  # секунды
-    frequency = 440.0  # Гц (нота Ля)
+    duration = 1.0  
+    frequency = 440.0  
     
-    # Генерируем звуковую волну
+    
     t = np.linspace(0, duration, int(sample_rate * duration), False)
     audio_data = np.sin(2 * np.pi * frequency * t) * 0.5
     
-    # Конвертируем в bytes
+    
     audio_bytes = io.BytesIO()
     with wave.open(audio_bytes, 'wb') as wf:
         wf.setnchannels(1)
@@ -39,10 +39,9 @@ def generate_test_audio():
 
 def generate_test_video():
     """Генерация тестового MP4 видео в памяти (миниатюрный видеофайл)"""
-    # В реальном проекте лучше использовать небольшой реальный видеофайл
-    # Здесь создаем "фейковый" видеофайл для тестов
+    
     video_data = io.BytesIO()
-    video_data.write(b'fake video data')  # В реальном тесте используйте реальный MP4
+    video_data.write(b'fake video data')  
     video_data.seek(0)
     return video_data
 
@@ -57,7 +56,7 @@ def test_tone_analysis_positive():
     response = client.post("/tone/", json={"text": TEST_TEXT_POSITIVE})
     assert response.status_code == 200
     result = response.json()
-    assert result["label"] in ["POSITIVE", "NEGATIVE"]  # Модель может вернуть любой
+    assert result["label"] in ["POSITIVE", "NEGATIVE"]  
     assert isinstance(result["score"], float)
 
 def test_tone_analysis_negative():
@@ -93,7 +92,7 @@ def test_audio_transcription():
     )
     assert response.status_code == 200
     result = response.json()
-    # Предполагаем, что модель возвращает текст или ошибку
+    
     assert isinstance(result, (str, dict)) 
 
 def test_video_classification():
@@ -106,26 +105,26 @@ def test_video_classification():
     )
     assert response.status_code == 200
     result = response.json()
-    # Предполагаем, что модель возвращает класс или ошибку
+    
     assert isinstance(result, (str, dict))
 
 def test_invalid_content_types():
     """Тест обработки неверных типов контента"""
-    # Неверный тип для изображения
+    
     response = client.post(
         "/image/",
         files={"body": ("test.txt", io.BytesIO(b"text"), "text/plain")}
     )
     assert response.status_code == 400
     
-    # Неверный тип для аудио
+    
     response = client.post(
         "/audio/",
         files={"body": ("test.txt", io.BytesIO(b"text"), "text/plain")}
     )
     assert response.status_code == 400
     
-    # Неверный тип для видео
+    
     response = client.post(
         "/video/",
         files={"body": ("test.txt", io.BytesIO(b"text"), "text/plain")}
