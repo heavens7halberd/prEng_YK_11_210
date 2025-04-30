@@ -990,7 +990,6 @@
 "rose hip",
 "horse chestnut seed",
 "coral fungus",
-"agaric",
 "gyromitra",
 "stinkhorn mushroom",
 "earth star",
